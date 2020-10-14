@@ -2,6 +2,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 
 /**
@@ -32,16 +33,34 @@ public class PasswordHashTester {
         return toHex(hash);
     }
 
+    public static String getSalt() throws NoSuchAlgorithmException {
+        //Always use a SecureRandom generator
+        SecureRandom sr = new SecureRandom();
+        //Create array for salt
+        byte[] salt = new byte[128];
+        //Get a random salt
+        sr.nextBytes(salt);
+        //return salt
+        return toHex(salt);
+    }
+
     public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException {
         PasswordHashTester hasher = new PasswordHashTester();
+        System.out.println("Salt:");
 
+        String salt = getSalt();
+        System.out.println(salt);
+
+        System.out.println("Hash");
         String generatedHash = getHash(
-                hasher.password,
-                hasher.salt);
+                "lærerlærersen",
+                salt);
 
         System.out.println(generatedHash);
 
+        /*
         System.out.println("Is this generated hash correct?");
         System.out.println(generatedHash.equals(hasher.compareHash));
+         */
     }
 }
